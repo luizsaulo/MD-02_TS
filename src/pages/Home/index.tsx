@@ -14,8 +14,11 @@ interface NewCycleFormData {
   minutesAmount: number
 }
 
+// Uma outra forma de escrever a interface acima é da maneira abaixo:
+// type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+
 export function Home() {  
-  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
+  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
       task: '',
@@ -24,7 +27,7 @@ export function Home() {
   })
 
   function handleCreateNewCycle(data: NewCycleFormData) {
-    
+    reset();
   }
 
   const task = watch('task')
