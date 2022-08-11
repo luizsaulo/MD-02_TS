@@ -2,6 +2,8 @@ import { FormContainer, MinutesAmountInput, TaskInput } from './styles'
 import * as zod from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useContext } from 'react';
+import { CyclesContext } from '../..';
 
 
 const newCycleFormValidationSchema = zod.object({
@@ -13,11 +15,13 @@ interface NewCycleFormData {
   task: string
   minutesAmount: number
 }
-
 // Uma outra forma de escrever a interface acima é da maneira abaixo:
 // type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
+
 export function NewCycleForm() {
+  const { activeCycle } = useContext(CyclesContext)
+
   const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
