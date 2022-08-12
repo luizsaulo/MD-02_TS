@@ -2,10 +2,11 @@ import { HandPalm, Play } from "phosphor-react";
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { HomeContainer, StartCountdownButton, StopCountdownButton } from "./styles";
 import { NewCycleForm } from "./components/NewCycleForm";
 import { Countdown } from "./components/Countdown";
+import { CyclesContext } from "../../contexts/CyclesContext";
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
@@ -22,7 +23,7 @@ interface NewCycleFormData {
 // type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
 export function Home() {  
-  
+  const { activeCycle, createNewCycle, interruptCurrentCycle } = useContext(CyclesContext)
 
   const newCycleForm = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
@@ -32,7 +33,7 @@ export function Home() {
     }
   })
 
-  const { handleSubmit, watch, reset } = newCycleForm  
+  const { handleSubmit, watch, /*reset*/ } = newCycleForm  
 
   const task = watch('task')
   const isSubmitDisabled = !task
@@ -42,7 +43,7 @@ export function Home() {
 
   return (
     <HomeContainer>
-      <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
+      <form onSubmit={handleSubmit(createNewCycle)} action="">
         
           <FormProvider {...newCycleForm}>
            <NewCycleForm />
@@ -50,7 +51,7 @@ export function Home() {
           <Countdown />        
 
         { activeCycle ? (
-          <StopCountdownButton onClick={handleInterruptCycle} type="button">
+          <StopCountdownButton onClick={interruptCurrentCycle} type="button">
             <HandPalm size={24} />
             Interromper
           </StopCountdownButton>
